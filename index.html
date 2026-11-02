@@ -88,8 +88,8 @@ blockquote cite { display: block; margin-top: 8px; font-family: var(--f-mono); f
 
 .map-box { min-width: 0; }
 .map-box figure { margin: 0; background: var(--paper-2); border: 1px solid var(--line); padding: 10px; }
-.map-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.map-box svg { display: block; width: 100%; min-width: 720px; height: auto; }
+.map-scroll { overflow: hidden; }
+.map-box svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
 .land { fill: var(--land); }
 .land-lived { fill: var(--land-lived); }
 .borders { fill: none; stroke: var(--paper-2); stroke-width: .6; }
@@ -135,12 +135,16 @@ blockquote cite { display: block; margin-top: 8px; font-family: var(--f-mono); f
 .marker b { margin-top: 8px; font: 500 12px var(--f-mono); color: var(--ink-soft); background: var(--paper); padding: 2px 4px; }
 
 /* Card */
-.card { position: relative; perspective: 1600px; }
-.flipper { position: relative; display: grid; transition: transform .75s cubic-bezier(.3,.7,.2,1); transform-style: preserve-3d; cursor: pointer; }
-.card.flipped .flipper { transform: rotateY(180deg); }
-.face { grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: var(--paper-2); border: 1px solid var(--line); min-width: 0; display: flex; flex-direction: column; }
-.back { transform: rotateY(180deg); padding: 26px 26px 22px; position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.card.flipped .back { overflow-y: auto; pointer-events: auto; }
+.card { position: relative; }
+.flipper { position: relative; display: grid; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.face { grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: var(--paper-2); border: 1px solid var(--line); min-width: 0; display: flex; flex-direction: column;
+  transition: transform .7s cubic-bezier(.3,.7,.2,1), visibility 0s linear .35s; }
+.front { transform: none; visibility: visible; }
+.back { visibility: hidden; }
+.card.flipped .front { transform: perspective(1600px) rotateY(-180deg); visibility: hidden; }
+.card.flipped .back { transform: perspective(1600px) rotateY(0deg); visibility: visible; }
+.back { transform: perspective(1600px) rotateY(180deg); padding: 26px 26px 22px; position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.card.flipped .back { overflow-y: auto; overscroll-behavior-y: auto; pointer-events: auto; }
 .card.flipped .front { pointer-events: none; }
 .flipper:hover .face { border-color: var(--ink-soft); }
 .flipper:focus-visible { outline: 2px solid var(--laranja); outline-offset: 4px; }
@@ -211,7 +215,7 @@ footer { padding-block: 24px 40px; color: var(--ink-soft); font-size: 13px; bord
   .back p { font-size: 14.5px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .flipper { transition: none; }
+  .face { transition: none; }
   .route { animation: none; stroke-dashoffset: 0; }
 }
 </style>
@@ -410,6 +414,9 @@ footer { padding-block: 24px 40px; color: var(--ink-soft); font-size: 13px; bord
   /* ---------- Mapa ---------- */
   const XY = {"brotas": [383.8, 324.5], "salvador": [395.2, 327.6], "ilheus": [393.9, 333.4], "strasbourg": [518.8, 132], "toulouse": [503.6, 147.5], "paris": [505.7, 131.1], "boston": [321.9, 151.4], "toronto": [302.4, 147.4], "caracas": [317.3, 253], "dar": [607.6, 307.9], "ny": [313.4, 156.4], "rio": [384.4, 359.2], "sp": [375.4, 361.3], "stdie": [516.9, 132.9]};
   const svg = document.getElementById("map");
+  const mqNarrow = matchMedia("(max-width: 720px)");
+  const fitMap = () => svg.setAttribute("viewBox", mqNarrow.matches ? "215 70 450 345" : "0 0 1000 500");
+  fitMap(); mqNarrow.addEventListener?.("change", fitMap);
   const NS = "http://www.w3.org/2000/svg";
   const el = (tag, attrs, parent = svg) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); parent.appendChild(n); return n; };
 
@@ -426,10 +433,10 @@ footer { padding-block: 24px 40px; color: var(--ink-soft); font-size: 13px; bord
   const LABELS = [
     { at: "salvador", text: "Bahia", sub: "Brotas · Salvador · Ilhéus", dx: 12, dy: 0 },
     { at: "sp", text: "Rio · São Paulo", sub: "1977–2001", dx: -12, dy: 14, anchor: "end" },
-    { at: "paris", text: "França", sub: "Strasbourg · Paris · Toulouse · Saint-Dié", dx: 0, dy: -30, anchor: "middle" },
-    { at: "toronto", text: "Toronto · MIT · Nova York", sub: "1971–1977", dx: -12, dy: -16, anchor: "end" },
+    { at: "paris", text: "França", sub: "Strasbourg · Paris · Toulouse · Saint-Dié", dx: 0, dy: -40, anchor: "middle" },
+    { at: "toronto", text: "Toronto · MIT · Nova York", sub: "1971–1977", dx: -8, dy: -26 },
     { at: "caracas", text: "Caracas", sub: "anos 1970", dx: -10, dy: 12, anchor: "end" },
-    { at: "dar", text: "Dar es Salaam", sub: "1974–1976", dx: 12, dy: 4 }
+    { at: "dar", text: "Dar es Salaam", sub: "1974–1976", dx: -8, dy: -26, anchor: "end" }
   ];
   LABELS.forEach(l => {
     const [x, y] = XY[l.at];
