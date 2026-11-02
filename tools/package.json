@@ -1,0 +1,15 @@
+{
+  "name": "milton-santos-bio-tools",
+  "private": true,
+  "description": "Gera js/mapa-mundi.js a partir dos dados do Natural Earth (world-atlas).",
+  "type": "module",
+  "scripts": {
+    "mapa": "node gerar-mapa.mjs"
+  },
+  "devDependencies": {
+    "d3-array": "3.2.4",
+    "d3-geo": "3.1.1",
+    "topojson-client": "3.1.0",
+    "world-atlas": "2.0.2"
+  }
+}

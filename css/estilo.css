@@ -1,0 +1,233 @@
+/* Milton Santos — vida e trajetória
+   Layout: retrato + título na abertura, faixa do mapa da trajetória, eixo vertical com cartões
+   que viram e grade de livros.
+   Paleta tirada da colagem do retrato: concreto, preto e branco da foto, laranja, turquesa e lilás. */
+
+/* ---------- Tokens ---------- */
+:root {
+  --paper: #ecebe8;          /* concreto claro (fundo) */
+  --paper-2: #f7f6f4;        /* superfícies: cartões, mapa, capas */
+  --ink: #1d1b20;            /* preto da fotografia */
+  --ink-soft: #57535c;
+  --line: #cfccc8;
+  --laranja: #d9640f;        /* laranja da colagem: destaques, percurso */
+  --turquesa: #23807b;       /* turquesa da colagem, escurecido para texto */
+  --lilas: #8a5a9e;          /* lilás da colagem */
+  --turquesa-claro: #9fd6d2;
+  --lilas-claro: #d4b6df;
+  --contour: #c6c3be;        /* curvas de nível das ilustrações */
+  --land: #d9d6d1;           /* continentes no mapa */
+  --land-lived: #b9dcd9;     /* países onde ele viveu */
+  --f-display: "Gloock", "Georgia", "Times New Roman", serif;
+  --f-body: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #17161a; --paper-2: #211f25; --ink: #efedf1; --ink-soft: #aaa5b0;
+    --line: #36333c; --laranja: #f39445; --turquesa: #7fcfc9; --lilas: #c59ad6;
+    --turquesa-claro: #2a5654; --lilas-claro: #4e3a5a; --contour: #333038; --land: #2e2c33; --land-lived: #2c4a49;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #17161a; --paper-2: #211f25; --ink: #efedf1; --ink-soft: #aaa5b0;
+  --line: #36333c; --laranja: #f39445; --turquesa: #7fcfc9; --lilas: #c59ad6;
+  --turquesa-claro: #2a5654; --lilas-claro: #4e3a5a; --contour: #333038; --land: #2e2c33; --land-lived: #2c4a49;
+  color-scheme: dark;
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  overflow-x: hidden;
+}
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+.wrap { max-width: 1120px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 400; text-wrap: balance; margin: 0; }
+.mono { font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.eyebrow { color: var(--laranja); }
+a { color: var(--turquesa); }
+:focus-visible { outline: 2px solid var(--laranja); outline-offset: 3px; }
+
+/* ---------- Abertura ---------- */
+.hero { padding-block: 56px 48px; display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 56px; align-items: center; }
+.portrait { margin: 0; position: relative; padding: 0 18px 18px 0; max-width: 300px; }
+.portrait::before, .portrait::after { content: ""; position: absolute; z-index: 0; }
+.portrait::before { right: 0; bottom: 0; width: 70%; height: 55%; background: var(--laranja); }
+.portrait::after { left: -14px; top: 22%; width: 38%; height: 30%; background: var(--lilas-claro); }
+.portrait img { position: relative; z-index: 1; display: block; width: 100%; height: auto; aspect-ratio: 335 / 597; object-fit: cover; }
+.hero-text { min-width: 0; }
+.hero h1 { font-size: clamp(56px, 9vw, 112px); line-height: .92; letter-spacing: -.02em; margin-top: 14px; }
+.hero h1 span { display: block; color: var(--turquesa); }
+.dates { display: flex; gap: 8px 22px; flex-wrap: wrap; margin-top: 20px; color: var(--ink-soft); }
+.dates span { display: inline-flex; align-items: center; gap: 7px; }
+.life-ico { width: 13px; height: 13px; flex: none; color: var(--laranja); }
+.lede { margin-top: 24px; max-width: 34em; font-size: 17px; }
+blockquote { margin: 28px 0 0; padding-left: 18px; border-left: 2px solid var(--laranja); font-family: var(--f-display); font-size: 22px; line-height: 1.35; max-width: 26em; }
+blockquote cite { display: block; margin-top: 8px; font-family: var(--f-mono); font-size: 12px; font-style: normal; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+
+/* ---------- Mapa da trajetória ---------- */
+.mapband { border-top: 1px solid var(--line); padding-block: 40px; display: grid; gap: 20px; }
+.mapband-head { display: flex; justify-content: space-between; align-items: end; gap: 12px 40px; flex-wrap: wrap; }
+.mapband h2 { font-size: clamp(30px, 4vw, 42px); line-height: 1.05; margin-top: 8px; }
+.mapband p { color: var(--ink-soft); max-width: 30em; }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--ink-soft); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 10px; display: inline-block; }
+.legend .sw-lived { background: var(--land-lived); }
+.legend .sw-route { background: var(--laranja); height: 2px; }
+
+.map-box { min-width: 0; }
+.map-box figure { margin: 0; background: var(--paper-2); border: 1px solid var(--line); padding: 10px; }
+.map-box figcaption { margin-top: 10px; color: var(--ink-soft); font-size: 13px; }
+/* Sem rolagem própria: o arraste vertical no celular passa para a página */
+.map-scroll { overflow: hidden; }
+.map-box svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+.land { fill: var(--land); }
+.land-lived { fill: var(--land-lived); }
+.borders { fill: none; stroke: var(--paper-2); stroke-width: .6; }
+.sphere { fill: none; stroke: var(--line); stroke-width: 1; }
+.grat { stroke: var(--line); stroke-width: .6; fill: none; }
+.grat-strong { stroke: var(--ink-soft); stroke-width: .7; stroke-dasharray: 3 3; fill: none; }
+.grat-label { fill: var(--ink-soft); font-family: var(--f-mono); font-size: 10px; }
+.route { stroke: var(--laranja); stroke-width: 1.6; fill: none; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 4s ease-out .3s forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.pt { fill: var(--paper-2); stroke: var(--ink); stroke-width: 1.6; cursor: pointer; transition: r .2s; }
+.pt.on { fill: var(--lilas); stroke: var(--lilas); }
+.pt-label, .pt-sub { paint-order: stroke; stroke: var(--paper-2); stroke-width: 3px; stroke-linejoin: round; }
+.pt-label { fill: var(--ink); font-family: var(--f-body); font-size: 13px; font-weight: 600; }
+.pt-sub { fill: var(--ink-soft); font-family: var(--f-mono); font-size: 10px; }
+
+/* ---------- Linha do tempo: cabeçalho e filtros ---------- */
+.tl-head { padding-block: 48px 8px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+.tl-head h2 { font-size: clamp(34px, 5vw, 52px); line-height: 1; }
+.tl-head p { margin: 10px 0 0; max-width: 36em; color: var(--ink-soft); }
+.tl-tools { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { font: 500 14px/1 var(--f-body); color: var(--ink); background: transparent; border: 1px solid var(--ink); padding: 11px 16px; cursor: pointer; border-radius: 2px; }
+.btn:hover { background: var(--ink); color: var(--paper); }
+
+.phases { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
+.chip { font: 500 13px/1 var(--f-body); border: 1px solid var(--line); background: var(--paper-2); color: var(--ink-soft); padding: 8px 12px; border-radius: 999px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper-2); }
+.chip:hover { border-color: var(--lilas); }
+
+/* ---------- Linha do tempo: eixo e marcos ---------- */
+.timeline { position: relative; padding-block: 40px 72px; display: grid; gap: 40px; }
+.timeline::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: var(--ink-soft); opacity: .5; }
+.item { display: grid; grid-template-columns: minmax(0, 1fr) 80px minmax(0, 1fr); align-items: start; }
+.item .slot { grid-column: 1; grid-row: 1; }
+/* Alterna os lados contando só os marcos visíveis (respeita o filtro de fase) */
+.item:nth-child(even of .item:not([hidden])) .slot { grid-column: 3; grid-row: 1; }
+.marker { grid-column: 2; grid-row: 1; position: relative; display: flex; flex-direction: column; align-items: center; padding-top: 22px; }
+.marker i { width: 15px; height: 15px; border-radius: 50%; background: var(--paper); border: 3px solid var(--laranja); }
+.item:nth-child(3n+2) .marker i { border-color: var(--turquesa); }
+.item:nth-child(3n) .marker i { border-color: var(--lilas); }
+.marker b { margin-top: 8px; font: 500 12px var(--f-mono); color: var(--ink-soft); background: var(--paper); padding: 2px 4px; }
+
+/* ---------- Cartão que vira ----------
+   Sem transform-style: preserve-3d. Cada face gira com a própria perspectiva e, em repouso,
+   a frente não tem transformação (evita travamentos de rolagem no celular).
+   O verso só rola e só recebe toque quando o cartão está virado. */
+.card { position: relative; }
+.flipper { position: relative; display: grid; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.flipper:hover .face { border-color: var(--ink-soft); }
+.flipper:focus-visible { outline: 2px solid var(--laranja); outline-offset: 4px; }
+.face {
+  grid-area: 1 / 1; min-width: 0; display: flex; flex-direction: column;
+  background: var(--paper-2); border: 1px solid var(--line);
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  transition: transform .7s cubic-bezier(.3,.7,.2,1), visibility 0s linear .35s;
+}
+.back {
+  position: absolute; inset: 0; padding: 26px 26px 22px;
+  transform: perspective(1600px) rotateY(180deg);
+  visibility: hidden; overflow: hidden; pointer-events: none;
+}
+.card.flipped .front { transform: perspective(1600px) rotateY(-180deg); visibility: hidden; pointer-events: none; }
+.card.flipped .back { transform: perspective(1600px) rotateY(0deg); visibility: visible; overflow-y: auto; pointer-events: auto; }
+
+/* Frente */
+.plate { position: relative; aspect-ratio: 16 / 10; max-width: 100%; overflow: hidden; background: var(--paper); border-bottom: 1px solid var(--line); }
+.plate canvas, .plate img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.plate img { object-fit: cover; filter: grayscale(.15) contrast(1.02); }
+.plate .glyph { position: absolute; left: 50%; top: 50%; width: 31%; transform: translate(-50%, -50%); color: var(--ink); }
+.plate .glyph svg { width: 100%; height: auto; display: block; }
+.plate .coord { position: absolute; left: 12px; bottom: 10px; color: var(--ink-soft); background: color-mix(in srgb, var(--paper) 82%, transparent); padding: 2px 6px; }
+.plate .year { position: absolute; right: 12px; top: 8px; font-family: var(--f-display); font-size: 44px; line-height: 1; color: var(--ink); }
+.plate.has-photo .glyph, .plate.has-photo canvas { display: none; }
+.plate.has-photo .year { color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.55); }
+.plate.has-photo .coord { background: rgba(0,0,0,.55); color: #fff; }
+
+.front-body { padding: 18px 22px 20px; display: grid; gap: 6px; }
+.front-body h3 { font-size: 27px; line-height: 1.1; }
+.front-body .place { color: var(--ink-soft); font-size: 14px; }
+.phase { color: var(--turquesa); }
+.hint { display: flex; align-items: center; gap: 6px; margin-top: 8px; color: var(--laranja); font-size: 13px; font-weight: 600; }
+.hint svg { width: 16px; height: 16px; }
+
+/* Verso */
+.back .phase { margin-bottom: 6px; }
+.back h3 { font-size: 24px; line-height: 1.12; margin-bottom: 12px; }
+.back p { margin: 0 0 10px; font-size: 15px; line-height: 1.6; }
+.back .fact { margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--line); font-size: 13px; color: var(--ink-soft); }
+.back .fact strong { color: var(--lilas); font-weight: 600; }
+
+/* Foto enviada pelo visitante (fica só no navegador dele) */
+.photo-btn { position: absolute; z-index: 3; left: 10px; top: 10px; font: 600 12px/1 var(--f-body); background: var(--paper-2); color: var(--ink); border: 1px solid var(--line); padding: 7px 10px; border-radius: 2px; cursor: pointer; transition: opacity .3s; }
+.photo-btn:hover { border-color: var(--ink); }
+.card.flipped .photo-btn { opacity: 0; pointer-events: none; }
+.photo-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* ---------- Livros ---------- */
+.works { border-top: 1px solid var(--line); padding-block: 48px 64px; display: grid; gap: 28px; }
+.works h2 { font-size: clamp(30px, 4vw, 42px); line-height: 1.05; margin-top: 8px; }
+.works-head p { color: var(--ink-soft); margin: 10px 0 0; max-width: 40em; }
+.books { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 32px 24px; }
+.book { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.cover { position: relative; aspect-ratio: 2 / 3; max-width: 100%; overflow: hidden; background: var(--paper-2); border: 1px solid var(--line); box-shadow: 4px 4px 0 var(--line); }
+.cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Ficha tipográfica exibida enquanto o livro não tem imagem de capa */
+.cover-ph { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 14px 12px; }
+.cover-ph::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 8px; background: var(--c, var(--laranja)); }
+.cover-ph b { font-family: var(--f-display); font-weight: 400; font-size: 18px; line-height: 1.12; color: var(--ink); text-wrap: balance; margin-top: 10px; }
+.cover-ph small { color: var(--ink-soft); font-size: 10px; line-height: 1.4; }
+.book-meta { display: grid; gap: 2px; }
+.book-meta span { font: 500 12px var(--f-mono); color: var(--laranja); font-variant-numeric: tabular-nums; }
+.book-meta em { font-style: italic; font-size: 15px; line-height: 1.35; }
+.book-meta small { color: var(--ink-soft); font-size: 13px; }
+
+footer { padding-block: 24px 40px; color: var(--ink-soft); font-size: 13px; border-top: 1px solid var(--line); }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; gap: 32px; padding-block: 36px 28px; }
+  .portrait { max-width: 240px; margin-left: 14px; }
+  .works { gap: 20px; }
+  .timeline::before { left: 19px; }
+  .item, .item:nth-child(even of .item:not([hidden])) { grid-template-columns: 40px minmax(0, 1fr); }
+  .item .slot, .item:nth-child(even of .item:not([hidden])) .slot { grid-column: 2; grid-row: 1; }
+  .marker { grid-column: 1; padding-top: 18px; }
+  .marker b { writing-mode: vertical-rl; transform: rotate(180deg); }
+}
+@media (max-width: 520px) {
+  .books { grid-template-columns: 1fr; }
+  .plate .year { font-size: 34px; }
+  .front-body h3 { font-size: 23px; }
+  .back { padding: 20px 18px 18px; }
+  .back p { font-size: 14.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .face { transition: none; }
+  .route { animation: none; stroke-dashoffset: 0; }
+}
